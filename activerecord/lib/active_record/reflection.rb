@@ -34,7 +34,8 @@ module ActiveRecord
 
     def self.add_reflection(ar, name, reflection)
       ar.clear_reflections_cache
-      ar._reflections = ar._reflections.merge(name.to_s => reflection)
+      name = name.to_s
+      ar._reflections = ar._reflections.except(name).merge!(name => reflection)
     end
 
     def self.add_aggregate_reflection(ar, name, reflection)
@@ -293,7 +294,7 @@ module ActiveRecord
         Relation.create(klass, table, predicate_builder)
       end
 
-      def join_primary_key(_)
+      def join_primary_key(*)
         foreign_key
       end
 
@@ -456,10 +457,6 @@ module ActiveRecord
       # klass option is necessary to support loading polymorphic associations
       def association_primary_key(klass = nil)
         options[:primary_key] || primary_key(klass || self.klass)
-      end
-
-      def association_primary_key_type
-        klass.type_for_attribute(association_primary_key.to_s)
       end
 
       def active_record_primary_key
@@ -722,7 +719,7 @@ module ActiveRecord
         end
       end
 
-      def join_primary_key(klass)
+      def join_primary_key(klass = nil)
         polymorphic? ? association_primary_key(klass) : association_primary_key
       end
 
@@ -857,10 +854,6 @@ module ActiveRecord
         # Get the "actual" source reflection if the immediate source reflection has a
         # source reflection itself
         actual_source_reflection.options[:primary_key] || primary_key(klass || self.klass)
-      end
-
-      def association_primary_key_type
-        klass.type_for_attribute(association_primary_key.to_s)
       end
 
       # Gets an array of possible <tt>:through</tt> source reflection names in both singular and plural form.

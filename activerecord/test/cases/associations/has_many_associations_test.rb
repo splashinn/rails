@@ -2509,6 +2509,15 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     assert_same car, new_bulb.car
   end
 
+  test "reattach to new objects replaces inverse association and foreign key" do
+    bulb = Bulb.create!(car: Car.create!)
+    assert bulb.car_id
+    car = Car.new
+    car.bulbs << bulb
+    assert_equal car, bulb.car
+    assert_nil bulb.car_id
+  end
+
   test "in memory replacement maintains order" do
     first_bulb = Bulb.create!
     second_bulb = Bulb.create!
@@ -2518,6 +2527,14 @@ class HasManyAssociationsTest < ActiveRecord::TestCase
     car.bulbs = [second_bulb, same_bulb]
 
     assert_equal [first_bulb, second_bulb], car.bulbs
+  end
+
+  test "association size calculation works with default scoped selects when not previously fetched" do
+    firm = Firm.create!(name: "Firm")
+    5.times { firm.developers_with_select << Developer.create!(name: "Developer") }
+
+    same_firm = Firm.find(firm.id)
+    assert_equal 5, same_firm.developers_with_select.size
   end
 
   test "prevent double insertion of new object when the parent association loaded in the after save callback" do

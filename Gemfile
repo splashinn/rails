@@ -61,7 +61,7 @@ group :job do
   gem "resque-scheduler", require: false
   gem "sidekiq", require: false
   gem "sucker_punch", require: false
-  gem "delayed_job", require: false, github: "collectiveidea/delayed_job"
+  gem "delayed_job", require: false
   gem "queue_classic", github: "QueueClassic/queue_classic", branch: "master", require: false, platforms: :ruby
   gem "sneakers", require: false
   gem "que", require: false
@@ -108,6 +108,7 @@ local_gemfile = File.expand_path(".Gemfile", __dir__)
 instance_eval File.read local_gemfile if File.exist? local_gemfile
 
 group :test do
+  gem "minitest", "~> 5.10.0"
   gem "minitest-bisect"
 
   platforms :mri do
