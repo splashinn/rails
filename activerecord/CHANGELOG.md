@@ -1,3 +1,17 @@
+*   Fix relation merger issue with `left_outer_joins`.
+
+    *Mehmet Emin İNAÇ*
+
+*   Don't allow destroyed object mutation after `save` or `save!` is called.
+
+    *Ryuta Kamizono*
+
+*   Take into account association conditions when deleting through records.
+
+    Fixes #18424.
+
+    *Piotr Jakubowski*
+
 *   Fix nested `has_many :through` associations on unpersisted parent instances.
 
     For example, if you have
