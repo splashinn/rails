@@ -131,7 +131,14 @@ module ActiveRecord
     def calculate(operation, column_name)
       if has_include?(column_name)
         relation = apply_join_dependency
-        relation.distinct! if operation.to_s.downcase == "count"
+
+        if operation.to_s.downcase == "count" && !distinct_value
+          relation.distinct!
+          # PostgreSQL: ORDER BY expressions must appear in SELECT list when using DISTINCT
+          if (column_name == :all || column_name.nil?) && select_values.empty?
+            relation.order_values = []
+          end
+        end
 
         relation.calculate(operation, column_name)
       else
@@ -235,7 +242,7 @@ module ActiveRecord
       def aggregate_column(column_name)
         return column_name if Arel::Expressions === column_name
 
-        if @klass.has_attribute?(column_name.to_s) || @klass.attribute_alias?(column_name.to_s)
+        if @klass.has_attribute?(column_name) || @klass.attribute_alias?(column_name)
           @klass.arel_attribute(column_name)
         else
           Arel.sql(column_name == :all ? "*" : column_name.to_s)

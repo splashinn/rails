@@ -551,7 +551,7 @@ Here are some ideas how to hide honeypot fields by JavaScript and/or CSS:
 * make the elements very small or color them the same as the background of the page
 * leave the fields displayed, but tell humans to leave them blank
 
-The most simple negative CAPTCHA is one hidden honeypot field. On the server side, you will check the value of the field: If it contains any text, it must be a bot. Then, you can either ignore the post or return a positive result, but not saving the post to the database. This way the bot will be satisfied and moves on. You can do this with annoying users, too.
+The most simple negative CAPTCHA is one hidden honeypot field. On the server side, you will check the value of the field: If it contains any text, it must be a bot. Then, you can either ignore the post or return a positive result, but not saving the post to the database. This way the bot will be satisfied and moves on.
 
 You can find more sophisticated negative CAPTCHAs in Ned Batchelder's [blog post](http://nedbatchelder.com/text/stopbots.html):
 
@@ -1070,7 +1070,10 @@ Every HTTP response from your Rails application receives the following default s
 config.action_dispatch.default_headers = {
   'X-Frame-Options' => 'SAMEORIGIN',
   'X-XSS-Protection' => '1; mode=block',
-  'X-Content-Type-Options' => 'nosniff'
+  'X-Content-Type-Options' => 'nosniff',
+  'X-Download-Options' => 'noopen',
+  'X-Permitted-Cross-Domain-Policies' => 'none',
+  'Referrer-Policy' => 'strict-origin-when-cross-origin'
 }
 ```
 

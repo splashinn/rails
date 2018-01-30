@@ -1,3 +1,34 @@
+*   Deprecate `expand_hash_conditions_for_aggregates` without replacement.
+    Using a `Relation` for performing queries is the prefered API.
+
+    *Ryuta Kamizono*
+
+*   Fix not expanded problem when passing an Array object as argument to the where method using `composed_of` column.
+
+    ```
+    david_balance = customers(:david).balance
+    Customer.where(balance: [david_balance]).to_sql
+
+    # Before: WHERE `customers`.`balance` = NULL
+    # After : WHERE `customers`.`balance` = 50
+    ```
+
+    Fixes #31723.
+
+    *Yutaro Kanagawa*
+
+*   Fix `count(:all)` with eager loading and having an order other than the driving table.
+
+    Fixes #31783.
+
+    *Ryuta Kamizono*
+
+*   Clear the transaction state when an Active Record object is duped.
+
+    Fixes #31670.
+
+    *Yuriy Ustushenko*
+
 *   Support for PostgreSQL foreign tables.
 
     *fatkodima*
@@ -625,7 +656,7 @@
 
     *Ryuta Kamizono*
 
-*   Fix inconsistency with changed attributes when overriding AR attribute reader.
+*   Fix inconsistency with changed attributes when overriding Active Record attribute reader.
 
     *bogdanvlviv*
 
